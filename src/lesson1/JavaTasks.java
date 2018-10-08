@@ -2,6 +2,9 @@ package lesson1;
 
 import kotlin.NotImplementedError;
 
+import java.io.*;
+import java.util.*;
+
 @SuppressWarnings("unused")
 public class JavaTasks {
     /**
@@ -32,9 +35,7 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortTimes(String inputName, String outputName) {
-        throw new NotImplementedError();
-    }
+    static public void sortTimes(String inputName, String outputName) { throw new NotImplementedError();}
 
     /**
      * Сортировка адресов
@@ -97,7 +98,53 @@ public class JavaTasks {
      * 121.3
      */
     static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+        try {
+            StringBuilder sb = new StringBuilder();
+            File InputFile = new File(inputName);
+            File outputFile = new File(outputName);
+            BufferedReader in = new BufferedReader(new FileReader(InputFile.getAbsoluteFile()));
+
+            try {
+                String s;
+                while ((s = in.readLine()) != null) {
+                    sb.append(s);
+                    sb.append("\n");
+                }
+            } finally {
+                in.close();
+            }
+
+            ArrayList<Float> floatList = new ArrayList<>();
+
+            for (String part : sb.toString().split("\n")) {
+                Float fl = Float.parseFloat(part);
+                floatList.add(fl);
+            }
+
+            for (int i = 0; i < floatList.size(); i++) {
+                for (int j = 0; j < floatList.size(); j++) {
+                    if (floatList.get(i) < floatList.get(j)){
+                        float papa = floatList.get(j);
+                        floatList.set(j,floatList.get(i));
+                        floatList.set(i,papa);
+                    }
+                }
+            }
+
+            PrintWriter out = new PrintWriter(outputFile.getAbsoluteFile());
+
+            try {
+                for (float f: floatList) {
+                    out.print(f);
+                    out.print("\n");
+                }
+            } finally {
+                out.close();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -130,7 +177,67 @@ public class JavaTasks {
      * 2
      */
     static public void sortSequence(String inputName, String outputName) {
-        throw new NotImplementedError();
+        try {
+            StringBuilder sb = new StringBuilder();
+            File InputFile = new File(inputName);
+            File outputFile = new File(outputName);
+            BufferedReader in = new BufferedReader(new FileReader(InputFile.getAbsoluteFile()));
+
+            try {
+                String s;
+                while ((s = in.readLine()) != null) {
+                    sb.append(s);
+                    sb.append("\n");
+                }
+            } finally {
+                in.close();
+            }
+
+            Map<Integer, Integer> hashMap = new HashMap<>();
+            String st;
+            int maxSize = 0;
+            int maxPoint = 0;
+
+            for (String part : sb.toString().split("\n")) {
+                Integer point = Integer.parseInt(part);
+                Integer count = hashMap.get(point);
+
+                if (count == null) {
+                    hashMap.put(point, 1);
+                } else {
+                    hashMap.put(point, hashMap.get(point) + 1);
+                    if (hashMap.get(point) > maxSize) {
+                        maxSize = hashMap.get(point);
+                        maxPoint = point;
+                    }
+                    else if (hashMap.get(point) >= maxSize && (maxPoint > point || maxPoint == 0)) {
+                        maxSize = hashMap.get(point);
+                        maxPoint = point;
+                    }
+                }
+            }
+
+            PrintWriter out = new PrintWriter(outputFile.getAbsoluteFile());
+
+            try {
+                for (String part : sb.toString().split("\n")) {
+                    Integer point = Integer.parseInt(part);
+                    if (point != maxPoint) {
+                        out.print(part);
+                        out.print("\n");
+                    }
+                }
+                for (int i = 1; i <= maxSize; i++) {
+                    out.print(maxPoint);
+                    out.print("\n");
+                }
+            } finally {
+                out.close();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
