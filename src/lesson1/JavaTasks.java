@@ -103,12 +103,13 @@ public class JavaTasks {
             File InputFile = new File(inputName);
             File outputFile = new File(outputName);
             BufferedReader in = new BufferedReader(new FileReader(InputFile.getAbsoluteFile()));
-
+            int end = 0;
             try {
                 String s;
                 while ((s = in.readLine()) != null) {
                     sb.append(s);
                     sb.append("\n");
+                    end++;
                 }
             } finally {
                 in.close();
@@ -121,15 +122,7 @@ public class JavaTasks {
                 floatList.add(fl);
             }
 
-            for (int i = 0; i < floatList.size(); i++) {
-                for (int j = 0; j < floatList.size(); j++) {
-                    if (floatList.get(i) < floatList.get(j)){
-                        float papa = floatList.get(j);
-                        floatList.set(j,floatList.get(i));
-                        floatList.set(i,papa);
-                    }
-                }
-            }
+            sort(0, end - 1, floatList);
 
             PrintWriter out = new PrintWriter(outputFile.getAbsoluteFile());
 
@@ -145,6 +138,34 @@ public class JavaTasks {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    private static void sort(int start, int end, List<Float> floats){
+        if (start >= end){
+            return;
+        }
+        int i = start;
+        int j = end;
+        int cur = i - (i - j) / 2;
+        while (i < j) {
+            while (i < cur && (floats.get(i) <= floats.get(cur))) {
+                i++;
+            }
+            while (j > cur && (floats.get(cur) <= floats.get(j))) {
+                j--;
+            }
+            if (i < j) {
+                float temp = floats.get(i);
+                floats.set(i,floats.get(j));
+                floats.set(j,temp);
+                if (i == cur) {
+                    cur = j;
+                } else if (j == cur) {
+                    cur = i;
+                }
+            }
+        }
+        sort(start,cur, floats);
+        sort(cur + 1, end, floats);
     }
 
     /**
