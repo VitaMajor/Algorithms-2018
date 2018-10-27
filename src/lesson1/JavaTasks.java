@@ -97,6 +97,8 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
+    // Трудоемкость: T = O(log(n))
+    // Ресурсоемкость: R = O(n)
     static public void sortTemperatures(String inputName, String outputName) {
         try {
             StringBuilder sb = new StringBuilder();
@@ -119,7 +121,11 @@ public class JavaTasks {
 
             for (String part : sb.toString().split("\n")) {
                 Float fl = Float.parseFloat(part);
-                floatList.add(fl);
+                if (fl >= -273.0 && fl <= 500.0) {
+                    floatList.add(fl);
+                } else {
+                    throw  new IllegalArgumentException("Число вне диапазона");
+                }
             }
 
             sort(0, end - 1, floatList);
@@ -197,6 +203,8 @@ public class JavaTasks {
      * 2
      * 2
      */
+    // Трудоемкость: T = O(n)
+    // Ресурсоемкость: R = O(n)
     static public void sortSequence(String inputName, String outputName) {
         try {
             StringBuilder sb = new StringBuilder();

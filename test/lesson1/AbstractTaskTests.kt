@@ -2,6 +2,7 @@ package lesson1
 
 import java.io.BufferedWriter
 import java.io.File
+import java.io.IOException
 import java.util.*
 import kotlin.math.abs
 
@@ -98,6 +99,14 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        try {
+            sortTemperatures("input/temp_in2.txt", "temp.txt")
+        } catch (e: IllegalArgumentException) {
+        }
+        try {
+            sortTemperatures("input/temp_in3.txt", "temp.txt")
+        } catch (e: RuntimeException) {
+        }
 
         fun testGeneratedTemperatures(size: Int) {
             try {
@@ -149,6 +158,10 @@ abstract class AbstractTaskTests : AbstractFileTests() {
                     """.trimIndent())
         } finally {
             File("temp.txt").delete()
+        }
+        try {
+            sortSequence("input/seq_in3.txt", "temp.txt")
+        } catch (e: RuntimeException) {
         }
 
         fun BufferedWriter.writeNumbers(numbers: List<Int>) {

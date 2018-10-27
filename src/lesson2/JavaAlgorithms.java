@@ -3,7 +3,11 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
-import java.util.Set;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
@@ -96,8 +100,38 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
+    // Трудоемкость: T = O(m * n)
+    // Ресурсоемкость: R = O(n)
     static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+
+        int maxLength = 0;
+        String maxLengthStr = "";
+        int firsLength = firs.length();
+        int secondLength = second.length();
+        int[][] table = new int[firsLength + 1][secondLength + 1];
+
+        for (int i = 1; i <= firsLength; i++) {
+            for (int j = 1; j <= secondLength; j++) {
+                if (firs.charAt(i - 1) == second.charAt(j-1)) {
+                    table[i][j] = table[i - 1][j - 1] + 1;
+                    if (table[i][j] > maxLength)
+                        maxLength = table[i][j];
+                }
+            }
+        }
+
+        for (int i = 1; i <= firsLength - maxLength; i++) {
+            for (int j = 1; j <= secondLength - maxLength; j++) {
+                if (firs.substring(i - 1,i + maxLength - 1).equals(second.substring(j - 1, j + maxLength - 1))) {
+                    table[i][j] = table[i - 1][j - 1] + 1;
+                    if (table[i][j] > maxLengthStr.length()) {
+                        maxLengthStr = firs.substring(i - 1, i + maxLength - 1);
+                        break;
+                    }
+                }
+            }
+        }
+        return maxLengthStr;
     }
 
     /**
@@ -140,7 +174,98 @@ public class JavaAlgorithms {
      * В файле буквы разделены пробелами, строки -- переносами строк.
      * Остальные символы ни в файле, ни в словах не допускаются.
      */
+    // Трудоемкость: T = O(n * m * k)
+    // Ресурсоемкость: R = O(n)
     static public Set<String> baldaSearcher(String inputName, Set<String> words) {
-        throw new NotImplementedError();
+        Set<String> str = new LinkedHashSet<>();
+        StringBuilder sb = new StringBuilder();
+        File InputFile = new File(inputName);
+
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(InputFile.getAbsoluteFile()));
+        try {
+            String s;
+            while ((s = in.readLine()) != null) {
+                sb.append(s);
+                sb.append("\n");
+            }
+        } finally {
+            in.close();
+        }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String[] lines = sb.toString().split("\n");
+        String[] letters = lines[0].split(" ");
+        String[][] field = new String[lines.length][letters.length];
+        boolean[][] wasHere = new boolean[lines.length][letters.length];
+
+        for (int i = 0; i < lines.length; i++) {
+            for (int j = 0; j < letters.length; j++) {
+                field[i][j] = String.valueOf(lines[i].charAt(2 * (j)));
+                wasHere[i][j] = false;
+            }
+        }
+
+        for (String word: words) {
+            for (int i = 0; i < lines.length; i++) {
+                for (int j = 0; j < letters.length; j++) {
+                    if (field[i][j].equals(String.valueOf(word.charAt(0)))) {
+                        if (look(field, i, j,lines.length - 1,letters.length - 1, word, wasHere)) {
+                            str.add(word);
+                        }
+                        refresh(lines.length, letters.length, wasHere);
+                    }
+                }
+            }
+        }
+        return str;
+    }
+
+    private static void refresh (int maxLine, int maxColumn, boolean[][] wasHere){
+        for (int i = 0; i < maxLine; i++) {
+            for (int j = 0; j < maxColumn; j++) {
+                wasHere[i][j] = false;
+            }
+        }
+    }
+
+    private static boolean look (String[][] field, int line, int column, int maxLine, int maxColumn, String word, boolean[][] wasHere) {
+
+        wasHere[line][column] = true;
+
+        if (word.length() == 1){
+            return true;
+        }
+        if (line > 0) {
+            if (field[line - 1][column].equals(String.valueOf(word.charAt(1))) && !wasHere[line - 1][column]) {
+                if (look(field,line - 1, column, maxLine, maxColumn, word.substring(1, word.length()), wasHere)){
+                    return true;
+                }
+            }
+        }
+        if (column > 0) {
+            if (field[line][column - 1].equals(String.valueOf(word.charAt(1))) && !wasHere[line][column - 1]) {
+                if (look(field, line,column - 1, maxLine, maxColumn, word.substring(1, word.length()), wasHere)){
+                    return true;
+                }
+            }
+        }
+        if (line < maxLine) {
+            if (field[line + 1][column].equals(String.valueOf(word.charAt(1))) && !wasHere[line + 1][column]) {
+                if (look(field,line + 1, column, maxLine, maxColumn, word.substring(1, word.length()), wasHere)){
+                    return true;
+                }
+            }
+        }
+        if (column < maxColumn) {
+            if (field[line][column + 1].equals(String.valueOf(word.charAt(1))) && !wasHere[line][column + 1]) {
+                if (look(field, line,column + 1, maxLine, maxColumn, word.substring(1, word.length()), wasHere)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
