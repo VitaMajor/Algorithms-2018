@@ -176,7 +176,7 @@ public class JavaAlgorithms {
      */
     // Трудоемкость: T = O(n * m * k)
     // Ресурсоемкость: R = O(n)
-    /**static public Set<String> baldaSearcher(String inputName, Set<String> words) {
+    static public Set<String> baldaSearcher(String inputName, Set<String> words) {
         Set<String> str = new LinkedHashSet<>();
         StringBuilder sb = new StringBuilder();
         File InputFile = new File(inputName);
@@ -268,5 +268,4 @@ public class JavaAlgorithms {
         }
         return false;
     }
-     */
 }
