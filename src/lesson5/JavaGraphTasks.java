@@ -1,7 +1,10 @@
 package lesson5;
 
 import kotlin.NotImplementedError;
+import sun.security.provider.certpath.Vertex;
 
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
@@ -33,8 +36,33 @@ public class JavaGraphTasks {
      * Справка: Эйлеров цикл -- это цикл, проходящий через все рёбра
      * связного графа ровно по одному разу
      */
+
+    //Трудоемкость: O(n + m)
+    //Трудоемкость: O(n)
     public static List<Graph.Edge> findEulerLoop(Graph graph) {
-        throw new NotImplementedError();
+        List list = new ArrayList<Graph.Edge>();
+        search(graph.get("A"), graph,list);
+        graph.getEdges();
+        return list;
+    }
+
+    public static boolean search(Graph.Vertex vertex, Graph graph, List<Graph.Edge> list) {
+        if (list.size() == graph.getEdges().size()) {
+            return true;
+        }
+        Set<Graph.Vertex> neighbors = graph.getNeighbors(vertex);
+        for (Graph.Vertex i: neighbors) {
+            Graph.Edge connection = graph.getConnection(vertex, i);
+            if (list.contains(connection)) continue;
+            list.add(connection);
+            if (search(i,graph,list)) {
+                return true;
+            }
+        }
+        if (!list.isEmpty()) {
+            list.remove( list.size() - 1);
+        }
+        return false;
     }
 
     /**
@@ -65,9 +93,7 @@ public class JavaGraphTasks {
      * |
      * J ------------ K
      */
-    public static Graph minimumSpanningTree(Graph graph) {
-        throw new NotImplementedError();
-    }
+    public static Graph minimumSpanningTree(Graph graph) { throw new NotImplementedError();}
 
     /**
      * Максимальное независимое множество вершин в графе без циклов.
